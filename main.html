@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Wrap Chat</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #0f0;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: #000;
+      background: #0f0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .chat-window {
+      display: none;
+      margin-top: 20px;
+    }
+    .messages {
+      height: 200px;
+      border: 1px solid #0f0;
+      overflow-y: scroll;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #111;
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-right: 10px;
+      border: 1px solid #0f0;
+      background: #000;
+      color: #0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="intro">
+      <h1>Quick Wrap</h1>
+      <button onclick="startChat()">Start Chat</button>
+    </div>
+    <div id="chat" class="chat-window">
+      <h2>Chat Room</h2>
+      <div class="messages" id="messages"></div>
+      <input type="text" id="messageInput" placeholder="Type a message">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    let peer;
+
+    // Start chat
+    function startChat() {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('chat').style.display = 'block';
+
+      peer = new SimplePeer({ initiator: true, trickle: false });
+
+      peer.on('signal', (data) => {
+        console.log('Signal Data:', data);
+        alert(`Share this signal data with the other peer:\n\n${JSON.stringify(data)}`);
+      });
+
+      peer.on('connect', () => {
+        console.log('Connected!');
+        alert('Peer connected! Start chatting.');
+      });
+
+      peer.on('data', (data) => {
+        const message = data.toString();
+        document.getElementById('messages').innerHTML += `<div>Peer: ${message}</div>`;
+      });
+
+      const signalData = prompt("Paste the other peer's signal data:");
+      if (signalData) {
+        peer.signal(JSON.parse(signalData));
+      }
+    }
+
+    // Send a message
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value;
+      if (message && peer) {
+        peer.send(message);
+        document.getElementById('messages').innerHTML += `<div>You: ${message}</div>`;
+        input.value = '';
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/simple-peer@9.11.0/simplepeer.min.js"></script>
+</body>
+</html>
