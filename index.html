@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +20,7 @@
             align-items: center;
             user-select: none;
             position: relative;
-            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: transparent; /* iPhone tap fix */
         }
         body::before {
             content: '';
@@ -36,38 +37,38 @@
         /* Intro & Options */
         #intro, #optionsPage {
             text-align: center;
-            padding: 25px;
+            padding: 30px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
             backdrop-filter: blur(5px);
             animation: fadeIn 1s ease-in;
         }
         #optionsPage { display: none; }
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 5vw, 3rem);
+            font-size: clamp(2rem, 6vw, 3.5rem);
             color: #0ff;
-            text-shadow: 0 0 10px #0ff;
+            text-shadow: 0 0 15px #0ff;
         }
-        p { font-size: 1.1rem; margin: 10px 0; }
+        p { font-size: 1.2rem; margin: 10px 0; }
         .btn {
-            padding: 10px 25px;
+            padding: 12px 30px;
             background: linear-gradient(45deg, #0ff, #f0f);
             border: none;
             color: #000;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-            margin: 8px;
-            touch-action: manipulation;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin: 10px;
+            touch-action: manipulation; /* iPhone touch fix */
         }
         .btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
         }
 
         /* Chat Page */
@@ -103,10 +104,9 @@
         }
 
         /* Sidebar Elements */
-        .sidebar-section { margin-bottom: 12px; }
-        #codeDisplay { font-size: 1rem; margin: 8px 0; }
+        .sidebar-section { margin-bottom: 15px; }
+        #codeDisplay { font-size: 1.1rem; margin: 10px 0; }
         #codeDisplay span { cursor: pointer; color: #f0f; }
-        #logoutBtn { background: linear-gradient(45deg, #f0f, #ff0); }
         .friend-list { list-style: none; }
         .friend-item {
             padding: 8px;
@@ -121,7 +121,7 @@
         }
         .friend-item:hover, .friend-item.active {
             background: rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
         .friend-item span.status-dot {
             width: 8px;
@@ -129,7 +129,7 @@
             border-radius: 50%;
             background: #f00;
         }
-        .friend-item.connected span.status-dot { background: #0f0; box-shadow: 0 0 6px #0f0; }
+        .friend-item.connected span.status-dot { background: #0f0; box-shadow: 0 0 8px #0f0; }
         .friend-item .unread { color: #f0f; font-size: 0.9rem; }
         #settingsPanel {
             padding: 10px;
@@ -147,13 +147,14 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: 8px;
             word-wrap: break-word;
+            position: relative;
             animation: slideIn 0.3s ease;
         }
         .message .timestamp { font-size: 0.8rem; color: #aaa; }
         .system-message { background: rgba(0, 255, 255, 0.2); color: #0ff; }
         .friend-message { background: rgba(255, 102, 255, 0.25); }
         .your-message { background: rgba(102, 204, 255, 0.25); text-align: right; }
-        #messageControls { display: flex; gap: 8px; margin-top: 10px; }
+        #messageControls { display: flex; gap: 10px; margin-top: 10px; }
         #messageInput {
             flex-grow: 1;
             padding: 10px;
@@ -163,11 +164,11 @@
             border-radius: 20px;
             font-size: 1rem;
         }
-        #messageInput:focus { border-color: #f0f; box-shadow: 0 0 8px rgba(255, 0, 255, 0.5); }
+        #messageInput:focus { border-color: #f0f; box-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
 
         /* Buttons & Inputs */
         button { padding: 8px 15px; background: linear-gradient(45deg, #0ff, #f0f); border: none; color: #000; border-radius: 20px; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: all 0.3s; }
-        button:hover { transform: scale(1.05); box-shadow: 0 0 12px rgba(0, 255, 255, 0.5); }
+        button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); }
         input[type="text"] { padding: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid #0ff; color: #fff; border-radius: 20px; }
 
         /* Animations */
@@ -179,10 +180,10 @@
 <body>
     <div id="intro">
         <h1>Quantum Wrap: Interstellar Chat</h1>
-        <p>Tap to connect across the galaxy!</p>
+        <p>Tap to enter the quantum network!</p>
     </div>
     <div id="optionsPage">
-        <h1>Pick Your Vibe</h1>
+        <h1>Choose Your Mode</h1>
         <button class="btn" id="freeModeBtn">Free Mode</button>
         <button class="btn" id="adminModeBtn">Admin Mode</button>
     </div>
@@ -194,7 +195,6 @@
                 <button id="joinBtn">Join Chat</button>
                 <p id="codeDisplay"></p>
                 <p id="status">Status: Disconnected</p>
-                <button id="logoutBtn">Logout</button>
             </div>
             <div class="sidebar-section">
                 <h3>Contacts</h3>
@@ -226,16 +226,11 @@
         let peer = null;
         let connections = {};
         let currentCode = null;
-        let currentPassword = null;
         let isAdmin = false;
         let activeFriend = null;
         let chatLogs = JSON.parse(localStorage.getItem('chatLogs')) || {};
         let unreadCounts = {};
         let profile = JSON.parse(localStorage.getItem('profile')) || { nickname: '', avatar: '🪐' };
-        let takenCodes = JSON.parse(localStorage.getItem('takenCodes')) || [];
-        let takenPasswords = JSON.parse(localStorage.getItem('takenPasswords')) || [];
-        let deviceId = localStorage.getItem('deviceId') || (localStorage.setItem('deviceId', 'device-' + Math.random().toString(36).substr(2, 9)), localStorage.getItem('deviceId'));
-        let savedAdmin = JSON.parse(localStorage.getItem('savedAdmin')) || {};
 
         const elements = {
             intro: document.getElementById('intro'),
@@ -255,15 +250,11 @@
             settingsToggle: document.getElementById('settingsToggle'),
             settingsPanel: document.getElementById('settingsPanel'),
             nickname: document.getElementById('nickname'),
-            avatarPicker: document.getElementById('avatarPicker'),
-            logoutBtn: document.getElementById('logoutBtn')
+            avatarPicker: document.getElementById('avatarPicker')
         };
 
         function generateShortCode() {
-            let code;
-            do { code = Math.floor(10000 + Math.random() * 90000).toString(); }
-            while (takenCodes.includes(code));
-            return code;
+            return Math.floor(10000 + Math.random() * 90000).toString();
         }
 
         function setupPeer(id) {
@@ -284,10 +275,13 @@
             });
 
             peer.on('open', (id) => {
-                elements.status.textContent = isAdmin ? `Status: Admin Online` : `Status: Guest Online`;
-                elements.codeDisplay.innerHTML = `${isAdmin ? 'Your' : 'Guest'} Code: ${currentCode} <span onclick="navigator.clipboard.writeText('${currentCode}')">[Copy]</span>`;
-                elements.logoutBtn.style.display = 'block';
-                addMessage(`System: ${isAdmin ? 'Admin' : 'Guest'} mode active.`, 'system-message');
+                elements.status.textContent = isAdmin ? `Status: Admin (${currentCode})` : `Status: Guest`;
+                if (isAdmin) {
+                    elements.codeDisplay.innerHTML = `Your Code: ${currentCode} <span onclick="navigator.clipboard.writeText('${currentCode}')">[Copy]</span>`;
+                    addMessage('System: Admin mode active.', 'system-message');
+                } else {
+                    elements.codeDisplay.textContent = `Guest Code: ${currentCode}`;
+                }
             });
 
             peer.on('connection', (conn) => {
@@ -299,15 +293,12 @@
 
             peer.on('error', (err) => {
                 elements.status.textContent = `Status: Error - ${err.type}`;
-                addMessage(`System: ${err.type} - Retrying...`, 'system-message');
-                setTimeout(() => peer.reconnect(), 2000); // Auto-retry on error
+                addMessage(`System: ${err.type} error.`, 'system-message');
             });
 
             peer.on('disconnected', () => {
-                elements.status.textContent = 'Status: Reconnecting...';
-                setTimeout(() => {
-                    if (peer && !peer.destroyed) peer.reconnect();
-                }, 1000); // Robust reconnection
+                elements.status.textContent = 'Status: Disconnected';
+                peer.reconnect();
             });
         }
 
@@ -399,19 +390,8 @@
         function cleanup() {
             Object.values(connections).forEach(conn => conn.close());
             connections = {};
-            if (peer && !peer.destroyed) peer.destroy();
+            if (peer) peer.destroy();
             peer = null;
-            activeFriend = null;
-            elements.messages.innerHTML = '';
-            elements.friendList.innerHTML = '';
-        }
-
-        function logout() {
-            cleanup();
-            elements.chatPage.style.display = 'none';
-            elements.optionsPage.style.display = 'block';
-            elements.status.textContent = 'Status: Disconnected';
-            elements.logoutBtn.style.display = 'none';
         }
 
         // Event Listeners
@@ -432,40 +412,9 @@
         elements.adminModeBtn.addEventListener('click', () => {
             isAdmin = true;
             const savedCode = localStorage.getItem('lockedCode');
-            let inputCode = savedCode || prompt('Enter your code (or blank to generate):') || generateShortCode();
-            let inputPassword;
-
-            if (savedAdmin.deviceId === deviceId && savedAdmin.code === inputCode) {
-                inputPassword = savedAdmin.password; // AI auto-fill
-                addMessage('System: AI recognized your device. Password loaded.', 'system-message');
-            } else {
-                inputPassword = prompt('Set your password (any length):');
-                if (!inputPassword) {
-                    alert('Password required for Admin Mode!');
-                    return;
-                }
-            }
-
-            if (takenPasswords.includes(inputPassword) && inputPassword !== savedAdmin.password) {
-                alert('Password taken! Try a different one (e.g., "Tree" ≠ "tree").');
-                return;
-            }
-            if (takenCodes.includes(inputCode) && inputCode !== savedCode) {
-                alert('Code already taken! Try another.');
-                return;
-            }
-
-            currentCode = inputCode;
-            currentPassword = inputPassword;
-
-            if (!savedCode && confirm('Lock this code and password?')) {
-                takenCodes.push(currentCode);
-                takenPasswords.push(currentPassword);
-                savedAdmin = { deviceId, code: currentCode, password: currentPassword };
-                localStorage.setItem('lockedCode', currentCode);
-                localStorage.setItem('savedAdmin', JSON.stringify(savedAdmin));
-                localStorage.setItem('takenCodes', JSON.stringify(takenCodes));
-                localStorage.setItem('takenPasswords', JSON.stringify(takenPasswords));
+            currentCode = savedCode || prompt('Enter your code (or blank to generate):') || generateShortCode();
+            if (!savedCode) {
+                if (confirm('Lock this code forever?')) localStorage.setItem('lockedCode', currentCode);
             }
             setupPeer(currentCode);
             elements.optionsPage.style.display = 'none';
@@ -474,12 +423,12 @@
 
         elements.codeBtn.addEventListener('click', () => {
             if (isAdmin && localStorage.getItem('lockedCode')) {
-                addMessage('System: Code locked. Logout to start fresh.', 'system-message');
+                addMessage('System: Code locked. Start new in Admin Mode.', 'system-message');
                 return;
             }
             currentCode = generateShortCode();
             setupPeer(currentCode);
-            elements.codeDisplay.innerHTML = `${isAdmin ? 'Your' : 'Guest'} Code: ${currentCode} <span onclick="navigator.clipboard.writeText('${currentCode}')">[Copy]</span>`;
+            elements.codeDisplay.innerHTML = `Your Code: ${currentCode} <span onclick="navigator.clipboard.writeText('${currentCode}')">[Copy]</span>`;
         });
 
         elements.joinBtn.addEventListener('click', () => {
@@ -498,8 +447,6 @@
         elements.settingsToggle.addEventListener('click', () => {
             elements.settingsPanel.style.display = elements.settingsPanel.style.display === 'block' ? 'none' : 'block';
         });
-
-        elements.logoutBtn.addEventListener('click', logout);
 
         elements.nickname.addEventListener('input', (e) => {
             profile.nickname = e.target.value;
