@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Wrap</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="intro-page">
+        <h1>Quick Wrap: Instant, Private, Peer-to-Peer Chat</h1>
+        <p>Generate a code. Connect with friends. No servers, just you and them.</p>
+        <button id="enter-chat-btn">Tap to Enter Chat</button>
+    </div>
 
+    <div id="main-page" class="hidden">
+        <div id="chat-sidebar">
+            <h2>Active Chats</h2>
+            <div id="chat-list"></div>
+            <button id="generate-code-btn">Generate Code</button>
+            <button id="join-chat-btn">Join Chat</button>
+        </div>
+
+        <div id="chat-window">
+            <div id="messages"></div>
+            <textarea id="message-input" placeholder="Type your message"></textarea>
+            <button id="send-msg-btn">Send</button>
+        </div>
+
+        <div id="payment-modal" class="hidden">
+            <h3>Unlock Quick Wrap Premium for $1</h3>
+            <button id="stripe-payment-btn">Pay with Stripe</button>
+            <button id="crypto-payment-btn">Pay with Crypto</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="app.js"></script>
+</body>
+</html>
