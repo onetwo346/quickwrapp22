@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quantum Wrap - Interstellar Chat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <title>ConnectSphere - Simple Secure Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Exo 2', sans-serif;
-            background: radial-gradient(circle at center, #0d1b2a, #1b263b);
-            color: #e0e0e0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #2a2a4a);
+            color: #e6e6e6;
             height: 100vh;
             overflow: hidden;
             display: flex;
@@ -23,51 +23,48 @@
         body::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#0ff" stroke-width="0.5" opacity="0.1"/></svg>');
-            animation: orbit 20s infinite linear;
+            inset: 0;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.05), transparent);
             z-index: -1;
+            animation: subtlePulse 10s infinite;
         }
 
         /* Intro */
         #intro {
             text-align: center;
-            animation: fadeIn 1.5s ease-in;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-            backdrop-filter: blur(5px);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in;
+            max-width: 90%;
         }
         #intro h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2rem, 6vw, 3.5rem);
-            color: #0ff;
-            text-shadow: 0 0 15px #0ff, 0 0 30px #f0f;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            color: #00d4ff;
+            font-weight: 700;
+            margin-bottom: 10px;
         }
         #intro p {
-            font-size: 1.2rem;
-            color: #e0e0e0;
-            margin: 10px 0;
+            font-size: 1rem;
+            color: #b0b0b0;
+            margin-bottom: 20px;
         }
         .intro-btn {
-            padding: 12px 30px;
-            background: linear-gradient(45deg, #0ff, #f0f);
+            padding: 10px 25px;
+            background: #00d4ff;
             border: none;
-            color: #000;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            border-radius: 25px;
+            color: #1e1e2f;
+            font-weight: 500;
+            border-radius: 30px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            margin: 5px;
         }
         .intro-btn:hover {
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.8);
+            background: #ff4081;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.5);
         }
 
         /* Chat Page */
@@ -78,52 +75,61 @@
             position: fixed;
             top: 0;
             left: 0;
-            animation: fadeIn 0.5s ease-in;
+            display: flex;
+            flex-direction: column;
         }
         #sidebar {
             width: 100%;
-            height: 40%;
-            background: linear-gradient(180deg, rgba(0, 10, 20, 0.9), rgba(0, 20, 40, 0.8));
-            padding: 20px;
+            max-width: 300px;
+            height: 100%;
+            background: rgba(30, 30, 47, 0.95);
+            padding: 15px;
             overflow-y: auto;
-            border-bottom: 2px solid #0ff;
-            position: relative;
-            z-index: 2;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            border-right: 1px solid rgba(0, 212, 255, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            transition: transform 0.3s ease;
         }
-        #sidebar::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 255, 255, 0.1), transparent);
-            animation: pulseGlow 4s infinite;
-            z-index: -1;
+        #sidebar.hidden {
+            transform: translateX(-100%);
         }
         #chatWindow {
+            flex-grow: 1;
             width: 100%;
-            height: 60%;
-            background: rgba(10, 15, 25, 0.95);
+            max-width: calc(100% - 300px);
+            height: 100%;
+            margin-left: 300px;
+            background: rgba(20, 20, 35, 0.95);
             padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1);
         }
-        @media (min-width: 769px) {
-            #sidebar { width: 30%; height: 100%; float: left; border-right: 2px solid #0ff; border-bottom: none; }
-            #chatWindow { width: 70%; height: 100%; float: right; }
+        @media (max-width: 768px) {
+            #sidebar {
+                max-width: 250px;
+                transform: translateX(-100%);
+            }
+            #sidebar.visible {
+                transform: translateX(0);
+            }
+            #chatWindow {
+                margin-left: 0;
+                max-width: 100%;
+            }
+            #toggleSidebar {
+                display: block;
+            }
         }
 
         /* Sidebar Elements */
         .sidebar-section {
             margin-bottom: 20px;
         }
-        .friend-list {
+        #friendList {
             list-style: none;
-            padding: 0;
         }
         .friend-item {
             padding: 10px;
@@ -131,44 +137,36 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
         }
         .friend-item:hover, .friend-item.active {
-            background: rgba(0, 255, 255, 0.3);
-            transform: translateX(5px);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            background: #00d4ff;
+            color: #1e1e2f;
         }
-        .friend-item span.status-dot {
-            width: 10px;
-            height: 10px;
+        .friend-item .status-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: #f00;
-            display: inline-block;
+            background: #ff4081;
         }
-        .friend-item.connected span.status-dot {
-            background: #0f0;
-            box-shadow: 0 0 10px #0f0;
-        }
-        .settings-toggle {
-            background: rgba(255, 0, 255, 0.2);
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .settings-toggle:hover {
-            background: rgba(255, 0, 255, 0.4);
+        .friend-item.connected .status-dot {
+            background: #00ff80;
         }
         #settingsPanel {
+            font-size: 0.9rem;
+        }
+        #toggleSidebar {
             display: none;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            margin-top: 10px;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 8px 15px;
+            background: #00d4ff;
+            border-radius: 20px;
+            z-index: 20;
         }
 
         /* Chat Window */
@@ -178,115 +176,101 @@
             padding: 10px;
         }
         .message {
-            margin: 10px 0;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            animation: slideIn 0.3s ease;
-            word-wrap: break-word;
+            margin: 8px 0;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            max-width: 80%;
+            font-size: 0.95rem;
             position: relative;
-            backdrop-filter: blur(2px);
+            animation: slideIn 0.2s ease;
         }
-        .message::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-            z-index: -1;
-        }
-        .system-message { background: rgba(0, 255, 255, 0.2); color: #0ff; }
-        .friend-message { background: rgba(255, 102, 255, 0.25); }
-        .your-message { background: rgba(102, 204, 255, 0.25); text-align: right; }
+        .system-message { background: rgba(0, 212, 255, 0.2); color: #00d4ff; align-self: center; }
+        .friend-message { background: rgba(255, 64, 129, 0.2); }
+        .your-message { background: rgba(0, 255, 128, 0.2); align-self: flex-end; }
         #messageControls {
             display: flex;
             gap: 10px;
-            margin-top: auto;
+            padding-top: 10px;
         }
         #messageInput {
             flex-grow: 1;
-            padding: 12px;
+            padding: 10px;
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #0ff;
-            color: #fff;
-            border-radius: 25px;
+            border: none;
+            color: #e6e6e6;
+            border-radius: 20px;
             font-size: 1rem;
-            transition: all 0.3s;
+            outline: none;
         }
         #messageInput:focus {
-            border-color: #f0f;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
         }
 
         /* Buttons & Inputs */
         button {
-            padding: 10px 20px;
-            background: linear-gradient(45deg, #0ff, #f0f);
+            padding: 8px 20px;
+            background: #00d4ff;
             border: none;
-            color: #000;
+            color: #1e1e2f;
+            font-weight: 500;
+            border-radius: 20px;
             cursor: pointer;
-            border-radius: 25px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            transition: all 0.3s;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            transition: all 0.3s ease;
         }
         button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+            background: #ff4081;
         }
         input[type="text"] {
-            padding: 10px;
+            width: 100%;
+            padding: 8px;
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #0ff;
-            color: #fff;
-            border-radius: 25px;
-            font-size: 1rem;
+            border: none;
+            color: #e6e6e6;
+            border-radius: 20px;
+            font-size: 0.9rem;
         }
 
         /* Animations */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes pulseGlow { 0% { opacity: 0.2; } 50% { opacity: 0.5; } 100% { opacity: 0.2; } }
-        @keyframes orbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes subtlePulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
     </style>
 </head>
 <body>
     <div id="intro">
-        <h1>Quantum Wrap: Interstellar Chat</h1>
-        <p>Secure P2P comms across the galaxy!</p>
+        <h1>ConnectSphere</h1>
+        <p>Chat securely with friends, anywhere, anytime.</p>
         <button class="intro-btn" id="quickChatBtn">Quick Chat</button>
-        <button class="intro-btn" id="adminLoginBtn">Admin Login</button>
+        <button class="intro-btn" id="adminLoginBtn">My Sphere</button>
     </div>
 
     <div id="chatPage">
+        <button id="toggleSidebar">☰</button>
         <div id="sidebar">
             <div class="sidebar-section">
-                <button id="codeBtn">Generate Code</button>
+                <button id="codeBtn">New Code</button>
                 <input id="codeInput" placeholder="Enter Code" maxlength="5" inputmode="numeric">
-                <button id="joinBtn">Join Chat</button>
+                <button id="joinBtn">Join</button>
                 <p id="codeDisplay"></p>
-                <p id="status">Status: Disconnected</p>
+                <p id="status">Status: Offline</p>
             </div>
             <div class="sidebar-section">
-                <h3>Contacts</h3>
-                <ul id="friendList" class="friend-list"></ul>
+                <h3>Friends</h3>
+                <ul id="friendList"></ul>
             </div>
             <div class="sidebar-section">
-                <div class="settings-toggle" id="settingsToggle">Settings</div>
+                <h3>Settings</h3>
                 <div id="settingsPanel">
-                    <label><input type="checkbox" id="darkMode"> Dark Mode</label><br>
-                    <label><input type="text" id="nickname" placeholder="Your Nickname"></label>
+                    <label>Nickname: <input type="text" id="nickname" placeholder="You"></label>
                 </div>
             </div>
         </div>
         <div id="chatWindow">
             <div id="messages"></div>
             <div id="messageControls">
-                <input id="messageInput" placeholder="Transmit message...">
+                <input id="messageInput" placeholder="Say something...">
                 <button id="sendBtn">Send</button>
             </div>
         </div>
@@ -294,7 +278,7 @@
 
     <script>
         let peer = null;
-        let connections = {}; // Multiple connections
+        let connections = {};
         let currentCode = null;
         let isAdmin = false;
         let activeFriend = null;
@@ -305,6 +289,7 @@
             chatPage: document.getElementById('chatPage'),
             quickChatBtn: document.getElementById('quickChatBtn'),
             adminLoginBtn: document.getElementById('adminLoginBtn'),
+            toggleSidebar: document.getElementById('toggleSidebar'),
             codeBtn: document.getElementById('codeBtn'),
             joinBtn: document.getElementById('joinBtn'),
             codeInput: document.getElementById('codeInput'),
@@ -314,9 +299,8 @@
             sendBtn: document.getElementById('sendBtn'),
             status: document.getElementById('status'),
             friendList: document.getElementById('friendList'),
-            settingsToggle: document.getElementById('settingsToggle'),
-            settingsPanel: document.getElementById('settingsPanel'),
-            nickname: document.getElementById('nickname')
+            nickname: document.getElementById('nickname'),
+            sidebar: document.getElementById('sidebar')
         };
 
         function generateShortCode() {
@@ -344,17 +328,12 @@
                 }
             });
 
-            peer.on('open', (id) => {
-                console.log('My peer ID:', id);
-                elements.status.textContent = isAdmin ? `Status: Admin Online (${currentCode})` : 'Status: Connected';
-                if (isAdmin) {
-                    elements.codeDisplay.textContent = `Your Code: ${currentCode}`;
-                    addMessage('System: Admin mode activated.', 'system-message');
-                }
+            peer.on('open', () => {
+                elements.status.textContent = isAdmin ? `Status: Sphere Active (${currentCode})` : 'Status: Online';
+                if (isAdmin) elements.codeDisplay.textContent = `Your Code: ${currentCode}`;
             });
 
             peer.on('connection', (conn) => {
-                console.log('Incoming connection:', conn.peer);
                 const friendId = conn.peer;
                 connections[friendId] = conn;
                 setupConnection(conn);
@@ -362,25 +341,16 @@
             });
 
             peer.on('error', (err) => {
-                console.error('Peer error:', err);
                 elements.status.textContent = `Status: Error - ${err.type}`;
-                addMessage(`System: ${err.type} error occurred.`, 'system-message');
-            });
-
-            peer.on('disconnected', () => {
-                elements.status.textContent = 'Status: Disconnected';
-                addMessage('System: Reconnecting...', 'system-message');
-                setTimeout(() => peer.reconnect(), 3000);
+                addMessage(`System: Connection issue: ${err.type}`, 'system-message');
             });
         }
 
         function setupConnection(conn) {
             const friendId = conn.peer;
             conn.on('open', () => {
-                console.log('Connected to:', friendId);
-                document.body.classList.add('connected');
-                elements.status.textContent = `Status: Linked (${Object.keys(connections).length} contacts)`;
-                addMessage('System: Contact established.', 'system-message', friendId);
+                elements.status.textContent = `Status: ${Object.keys(connections).length} Friend(s)`;
+                addMessage('System: Friend joined!', 'system-message', friendId);
                 updateFriendStatus(friendId, true);
             });
 
@@ -389,9 +359,8 @@
             });
 
             conn.on('close', () => {
-                console.log('Connection closed:', friendId);
                 updateFriendStatus(friendId, false);
-                addMessage('System: Contact lost.', 'system-message', friendId);
+                addMessage('System: Friend left.', 'system-message', friendId);
             });
         }
 
@@ -429,7 +398,7 @@
             const li = document.createElement('li');
             li.id = `friend-${friendId}`;
             li.className = 'friend-item';
-            li.innerHTML = `<span>${friendId}</span><span class="status-dot"></span>`;
+            li.innerHTML = `<span class="status-dot"></span>${friendId}`;
             li.onclick = () => switchToFriend(friendId);
             elements.friendList.appendChild(li);
             if (!activeFriend) switchToFriend(friendId);
@@ -452,6 +421,7 @@
             elements.messages.scrollTop = elements.messages.scrollHeight;
             document.querySelectorAll('.friend-item').forEach(item => item.classList.remove('active'));
             document.getElementById(`friend-${friendId}`).classList.add('active');
+            if (window.innerWidth <= 768) elements.sidebar.classList.remove('visible');
         }
 
         function cleanup() {
@@ -459,30 +429,26 @@
             connections = {};
             if (peer) peer.destroy();
             peer = null;
-            document.body.classList.remove('connected');
         }
 
         // Event Listeners
         elements.quickChatBtn.addEventListener('click', () => {
             isAdmin = false;
             elements.intro.style.display = 'none';
-            elements.chatPage.style.display = 'block';
+            elements.chatPage.style.display = 'flex';
         });
 
         elements.adminLoginBtn.addEventListener('click', () => {
-            const code = prompt('Enter your admin code (or leave blank to generate):');
+            const code = prompt('Enter your Sphere code (or blank for new):');
             isAdmin = true;
             currentCode = code || generateShortCode();
             setupPeer(currentCode);
             elements.intro.style.display = 'none';
-            elements.chatPage.style.display = 'block';
+            elements.chatPage.style.display = 'flex';
         });
 
         elements.codeBtn.addEventListener('click', () => {
-            if (isAdmin && currentCode) {
-                addMessage('System: Admin code already active.', 'system-message');
-                return;
-            }
+            if (isAdmin && currentCode) return;
             currentCode = generateShortCode();
             setupPeer(currentCode);
             elements.codeDisplay.textContent = `Your Code: ${currentCode}`;
@@ -491,7 +457,7 @@
         elements.joinBtn.addEventListener('click', () => {
             const code = elements.codeInput.value.trim();
             if (!code || code.length !== 5 || !/^\d+$/.test(code)) {
-                addMessage('System: Invalid code.', 'system-message');
+                addMessage('System: Invalid code!', 'system-message');
                 return;
             }
             if (!peer) setupPeer('joiner-' + Date.now());
@@ -503,8 +469,8 @@
             if (e.key === 'Enter') sendMessage();
         });
 
-        elements.settingsToggle.addEventListener('click', () => {
-            elements.settingsPanel.style.display = elements.settingsPanel.style.display === 'block' ? 'none' : 'block';
+        elements.toggleSidebar.addEventListener('click', () => {
+            elements.sidebar.classList.toggle('visible');
         });
 
         elements.nickname.addEventListener('change', (e) => {
@@ -512,10 +478,7 @@
         });
 
         window.addEventListener('beforeunload', (e) => {
-            if (Object.keys(connections).length) {
-                e.returnValue = 'You’re linked to contacts. Leaving will disconnect.';
-                return e.returnValue;
-            }
+            if (Object.keys(connections).length) e.returnValue = 'You’ll disconnect from friends.';
         });
         window.addEventListener('unload', cleanup);
     </script>
