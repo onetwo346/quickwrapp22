@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ConnectSphere - Simple Secure Chat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <title>Quantum Wrap - Interstellar Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1e1e2f, #2a2a4a);
-            color: #e6e6e6;
+            font-family: 'Exo 2', sans-serif;
+            background: radial-gradient(circle at center, #0d1b2a, #1b263b);
+            color: #e0e0e0;
             height: 100vh;
             overflow: hidden;
             display: flex;
@@ -19,52 +19,55 @@
             align-items: center;
             user-select: none;
             position: relative;
+            -webkit-tap-highlight-color: transparent; /* iPhone tap fix */
         }
         body::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: radial-gradient(circle, rgba(0, 255, 255, 0.05), transparent);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#0ff" stroke-width="0.5" opacity="0.1"/></svg>');
+            animation: orbit 20s infinite linear;
             z-index: -1;
-            animation: subtlePulse 10s infinite;
         }
 
-        /* Intro */
-        #intro {
+        /* Intro & Options */
+        #intro, #optionsPage {
             text-align: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
             animation: fadeIn 1s ease-in;
-            max-width: 90%;
         }
-        #intro h1 {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-            color: #00d4ff;
-            font-weight: 700;
-            margin-bottom: 10px;
+        #optionsPage { display: none; }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #0ff;
+            text-shadow: 0 0 15px #0ff;
         }
-        #intro p {
-            font-size: 1rem;
-            color: #b0b0b0;
-            margin-bottom: 20px;
-        }
-        .intro-btn {
-            padding: 10px 25px;
-            background: #00d4ff;
+        p { font-size: 1.2rem; margin: 10px 0; }
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #0ff, #f0f);
             border: none;
-            color: #1e1e2f;
-            font-weight: 500;
-            border-radius: 30px;
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin: 10px;
+            touch-action: manipulation; /* iPhone touch fix */
         }
-        .intro-btn:hover {
-            background: #ff4081;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.5);
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
         }
 
         /* Chat Page */
@@ -75,202 +78,144 @@
             position: fixed;
             top: 0;
             left: 0;
-            display: flex;
-            flex-direction: column;
+            animation: fadeIn 0.5s ease-in;
         }
         #sidebar {
             width: 100%;
-            max-width: 300px;
-            height: 100%;
-            background: rgba(30, 30, 47, 0.95);
+            height: 40%;
+            background: linear-gradient(180deg, rgba(0, 10, 20, 0.9), rgba(0, 20, 40, 0.8));
             padding: 15px;
             overflow-y: auto;
-            border-right: 1px solid rgba(0, 212, 255, 0.2);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10;
-            transition: transform 0.3s ease;
-        }
-        #sidebar.hidden {
-            transform: translateX(-100%);
+            border-bottom: 2px solid #0ff;
         }
         #chatWindow {
-            flex-grow: 1;
             width: 100%;
-            max-width: calc(100% - 300px);
-            height: 100%;
-            margin-left: 300px;
-            background: rgba(20, 20, 35, 0.95);
-            padding: 20px;
+            height: 60%;
+            background: rgba(10, 15, 25, 0.95);
+            padding: 15px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
-        @media (max-width: 768px) {
-            #sidebar {
-                max-width: 250px;
-                transform: translateX(-100%);
-            }
-            #sidebar.visible {
-                transform: translateX(0);
-            }
-            #chatWindow {
-                margin-left: 0;
-                max-width: 100%;
-            }
-            #toggleSidebar {
-                display: block;
-            }
+        @media (min-width: 769px) {
+            #sidebar { width: 30%; height: 100%; float: left; border-right: 2px solid #0ff; border-bottom: none; }
+            #chatWindow { width: 70%; height: 100%; float: right; }
         }
 
         /* Sidebar Elements */
-        .sidebar-section {
-            margin-bottom: 20px;
-        }
-        #friendList {
-            list-style: none;
-        }
+        .sidebar-section { margin-bottom: 15px; }
+        #codeDisplay { font-size: 1.1rem; margin: 10px 0; }
+        #codeDisplay span { cursor: pointer; color: #f0f; }
+        .friend-list { list-style: none; }
         .friend-item {
-            padding: 10px;
+            padding: 8px;
             margin: 5px 0;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
         .friend-item:hover, .friend-item.active {
-            background: #00d4ff;
-            color: #1e1e2f;
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
-        .friend-item .status-dot {
+        .friend-item span.status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #ff4081;
+            background: #f00;
         }
-        .friend-item.connected .status-dot {
-            background: #00ff80;
-        }
+        .friend-item.connected span.status-dot { background: #0f0; box-shadow: 0 0 8px #0f0; }
+        .friend-item .unread { color: #f0f; font-size: 0.9rem; }
         #settingsPanel {
-            font-size: 0.9rem;
-        }
-        #toggleSidebar {
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
             display: none;
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            padding: 8px 15px;
-            background: #00d4ff;
-            border-radius: 20px;
-            z-index: 20;
         }
+        #avatarPicker select { width: 100%; padding: 5px; margin: 5px 0; border-radius: 5px; }
 
         /* Chat Window */
-        #messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
+        #messages { flex-grow: 1; overflow-y: auto; padding: 10px; }
         .message {
             margin: 8px 0;
-            padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            max-width: 80%;
-            font-size: 0.95rem;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            word-wrap: break-word;
             position: relative;
-            animation: slideIn 0.2s ease;
+            animation: slideIn 0.3s ease;
         }
-        .system-message { background: rgba(0, 212, 255, 0.2); color: #00d4ff; align-self: center; }
-        .friend-message { background: rgba(255, 64, 129, 0.2); }
-        .your-message { background: rgba(0, 255, 128, 0.2); align-self: flex-end; }
-        #messageControls {
-            display: flex;
-            gap: 10px;
-            padding-top: 10px;
-        }
+        .message .timestamp { font-size: 0.8rem; color: #aaa; }
+        .system-message { background: rgba(0, 255, 255, 0.2); color: #0ff; }
+        .friend-message { background: rgba(255, 102, 255, 0.25); }
+        .your-message { background: rgba(102, 204, 255, 0.25); text-align: right; }
+        #messageControls { display: flex; gap: 10px; margin-top: 10px; }
         #messageInput {
             flex-grow: 1;
             padding: 10px;
             background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #e6e6e6;
+            border: 1px solid #0ff;
+            color: #fff;
             border-radius: 20px;
             font-size: 1rem;
-            outline: none;
         }
-        #messageInput:focus {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-        }
+        #messageInput:focus { border-color: #f0f; box-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
 
         /* Buttons & Inputs */
-        button {
-            padding: 8px 20px;
-            background: #00d4ff;
-            border: none;
-            color: #1e1e2f;
-            font-weight: 500;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        button:hover {
-            background: #ff4081;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #e6e6e6;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
+        button { padding: 8px 15px; background: linear-gradient(45deg, #0ff, #f0f); border: none; color: #000; border-radius: 20px; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: all 0.3s; }
+        button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); }
+        input[type="text"] { padding: 8px; background: rgba(255, 255, 255, 0.1); border: 1px solid #0ff; color: #fff; border-radius: 20px; }
 
         /* Animations */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes subtlePulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes orbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <div id="intro">
-        <h1>ConnectSphere</h1>
-        <p>Chat securely with friends, anywhere, anytime.</p>
-        <button class="intro-btn" id="quickChatBtn">Quick Chat</button>
-        <button class="intro-btn" id="adminLoginBtn">My Sphere</button>
+        <h1>Quantum Wrap: Interstellar Chat</h1>
+        <p>Tap to enter the quantum network!</p>
     </div>
-
+    <div id="optionsPage">
+        <h1>Choose Your Mode</h1>
+        <button class="btn" id="freeModeBtn">Free Mode</button>
+        <button class="btn" id="adminModeBtn">Admin Mode</button>
+    </div>
     <div id="chatPage">
-        <button id="toggleSidebar">☰</button>
         <div id="sidebar">
             <div class="sidebar-section">
-                <button id="codeBtn">New Code</button>
+                <button id="codeBtn">Generate Code</button>
                 <input id="codeInput" placeholder="Enter Code" maxlength="5" inputmode="numeric">
-                <button id="joinBtn">Join</button>
+                <button id="joinBtn">Join Chat</button>
                 <p id="codeDisplay"></p>
-                <p id="status">Status: Offline</p>
+                <p id="status">Status: Disconnected</p>
             </div>
             <div class="sidebar-section">
-                <h3>Friends</h3>
-                <ul id="friendList"></ul>
+                <h3>Contacts</h3>
+                <ul id="friendList" class="friend-list"></ul>
             </div>
             <div class="sidebar-section">
-                <h3>Settings</h3>
+                <div class="settings-toggle" id="settingsToggle">Settings</div>
                 <div id="settingsPanel">
-                    <label>Nickname: <input type="text" id="nickname" placeholder="You"></label>
+                    <label><input type="text" id="nickname" placeholder="Nickname"></label><br>
+                    <label>Avatar: <select id="avatarPicker">
+                        <option value="🪐">🪐</option>
+                        <option value="🚀">🚀</option>
+                        <option value="🌌">🌌</option>
+                        <option value="👽">👽</option>
+                    </select></label>
                 </div>
             </div>
         </div>
         <div id="chatWindow">
             <div id="messages"></div>
             <div id="messageControls">
-                <input id="messageInput" placeholder="Say something...">
+                <input id="messageInput" placeholder="Transmit message...">
                 <button id="sendBtn">Send</button>
             </div>
         </div>
@@ -283,13 +228,15 @@
         let isAdmin = false;
         let activeFriend = null;
         let chatLogs = JSON.parse(localStorage.getItem('chatLogs')) || {};
+        let unreadCounts = {};
+        let profile = JSON.parse(localStorage.getItem('profile')) || { nickname: '', avatar: '🪐' };
 
         const elements = {
             intro: document.getElementById('intro'),
+            optionsPage: document.getElementById('optionsPage'),
             chatPage: document.getElementById('chatPage'),
-            quickChatBtn: document.getElementById('quickChatBtn'),
-            adminLoginBtn: document.getElementById('adminLoginBtn'),
-            toggleSidebar: document.getElementById('toggleSidebar'),
+            freeModeBtn: document.getElementById('freeModeBtn'),
+            adminModeBtn: document.getElementById('adminModeBtn'),
             codeBtn: document.getElementById('codeBtn'),
             joinBtn: document.getElementById('joinBtn'),
             codeInput: document.getElementById('codeInput'),
@@ -299,8 +246,10 @@
             sendBtn: document.getElementById('sendBtn'),
             status: document.getElementById('status'),
             friendList: document.getElementById('friendList'),
+            settingsToggle: document.getElementById('settingsToggle'),
+            settingsPanel: document.getElementById('settingsPanel'),
             nickname: document.getElementById('nickname'),
-            sidebar: document.getElementById('sidebar')
+            avatarPicker: document.getElementById('avatarPicker')
         };
 
         function generateShortCode() {
@@ -316,11 +265,7 @@
                         { urls: 'stun:stun.l.google.com:19302' },
                         { urls: 'stun:stun1.l.google.com:19302' },
                         {
-                            urls: [
-                                'turn:openrelay.metered.ca:80',
-                                'turn:openrelay.metered.ca:443',
-                                'turn:openrelay.metered.ca:443?transport=tcp'
-                            ],
+                            urls: ['turn:openrelay.metered.ca:80', 'turn:openrelay.metered.ca:443', 'turn:openrelay.metered.ca:443?transport=tcp'],
                             username: 'openrelayproject',
                             credential: 'openrelayproject'
                         }
@@ -328,9 +273,14 @@
                 }
             });
 
-            peer.on('open', () => {
-                elements.status.textContent = isAdmin ? `Status: Sphere Active (${currentCode})` : 'Status: Online';
-                if (isAdmin) elements.codeDisplay.textContent = `Your Code: ${currentCode}`;
+            peer.on('open', (id) => {
+                elements.status.textContent = isAdmin ? `Status: Admin (${currentCode})` : `Status: Guest`;
+                if (isAdmin) {
+                    elements.codeDisplay.innerHTML = `Your Code: ${currentCode} <span onclick="navigator.clipboard.writeText('${currentCode}')">[Copy]</span>`;
+                    addMessage('System: Admin mode active.', 'system-message');
+                } else {
+                    elements.codeDisplay.textContent = `Guest Code: ${currentCode}`;
+                }
             });
 
             peer.on('connection', (conn) => {
@@ -342,25 +292,32 @@
 
             peer.on('error', (err) => {
                 elements.status.textContent = `Status: Error - ${err.type}`;
-                addMessage(`System: Connection issue: ${err.type}`, 'system-message');
+                addMessage(`System: ${err.type} error.`, 'system-message');
+            });
+
+            peer.on('disconnected', () => {
+                elements.status.textContent = 'Status: Disconnected';
+                peer.reconnect();
             });
         }
 
         function setupConnection(conn) {
             const friendId = conn.peer;
             conn.on('open', () => {
-                elements.status.textContent = `Status: ${Object.keys(connections).length} Friend(s)`;
-                addMessage('System: Friend joined!', 'system-message', friendId);
+                elements.status.textContent = `Status: Linked (${Object.keys(connections).length})`;
+                addMessage('System: Contact online.', 'system-message', friendId);
                 updateFriendStatus(friendId, true);
             });
 
             conn.on('data', (data) => {
                 addMessage(`Friend: ${data}`, 'friend-message', friendId);
+                if (friendId !== activeFriend) unreadCounts[friendId] = (unreadCounts[friendId] || 0) + 1;
+                updateFriendStatus(friendId, true);
             });
 
             conn.on('close', () => {
                 updateFriendStatus(friendId, false);
-                addMessage('System: Friend left.', 'system-message', friendId);
+                addMessage('System: Contact offline.', 'system-message', friendId);
             });
         }
 
@@ -381,13 +338,14 @@
 
         function addMessage(text, className = '', friendId = activeFriend) {
             if (!friendId) return;
+            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             if (!chatLogs[friendId]) chatLogs[friendId] = [];
-            chatLogs[friendId].push({ text, className });
+            chatLogs[friendId].push({ text, className, timestamp });
             if (isAdmin) localStorage.setItem('chatLogs', JSON.stringify(chatLogs));
             if (friendId === activeFriend) {
                 const msg = document.createElement('div');
                 msg.className = `message ${className}`;
-                msg.textContent = text;
+                msg.innerHTML = `${text}<span class="timestamp">${timestamp}</span>`;
                 elements.messages.appendChild(msg);
                 elements.messages.scrollTop = elements.messages.scrollHeight;
             }
@@ -398,7 +356,7 @@
             const li = document.createElement('li');
             li.id = `friend-${friendId}`;
             li.className = 'friend-item';
-            li.innerHTML = `<span class="status-dot"></span>${friendId}`;
+            li.innerHTML = `<span>${profile.nickname || friendId} ${isAdmin ? profile.avatar : ''}</span><span class="status-dot"></span><span class="unread">${unreadCounts[friendId] || ''}</span>`;
             li.onclick = () => switchToFriend(friendId);
             elements.friendList.appendChild(li);
             if (!activeFriend) switchToFriend(friendId);
@@ -406,22 +364,26 @@
 
         function updateFriendStatus(friendId, isConnected) {
             const friendItem = document.getElementById(`friend-${friendId}`);
-            if (friendItem) friendItem.classList.toggle('connected', isConnected);
+            if (friendItem) {
+                friendItem.classList.toggle('connected', isConnected);
+                friendItem.querySelector('.unread').textContent = unreadCounts[friendId] || '';
+            }
         }
 
         function switchToFriend(friendId) {
             activeFriend = friendId;
             elements.messages.innerHTML = '';
-            chatLogs[friendId]?.forEach(({ text, className }) => {
+            chatLogs[friendId]?.forEach(({ text, className, timestamp }) => {
                 const msg = document.createElement('div');
                 msg.className = `message ${className}`;
-                msg.textContent = text;
+                msg.innerHTML = `${text}<span class="timestamp">${timestamp}</span>`;
                 elements.messages.appendChild(msg);
             });
             elements.messages.scrollTop = elements.messages.scrollHeight;
+            unreadCounts[friendId] = 0;
+            updateFriendStatus(friendId, connections[friendId]?.open);
             document.querySelectorAll('.friend-item').forEach(item => item.classList.remove('active'));
             document.getElementById(`friend-${friendId}`).classList.add('active');
-            if (window.innerWidth <= 768) elements.sidebar.classList.remove('visible');
         }
 
         function cleanup() {
@@ -432,32 +394,46 @@
         }
 
         // Event Listeners
-        elements.quickChatBtn.addEventListener('click', () => {
-            isAdmin = false;
+        elements.intro.addEventListener('click', () => {
             elements.intro.style.display = 'none';
-            elements.chatPage.style.display = 'flex';
+            elements.optionsPage.style.display = 'block';
         });
 
-        elements.adminLoginBtn.addEventListener('click', () => {
-            const code = prompt('Enter your Sphere code (or blank for new):');
-            isAdmin = true;
-            currentCode = code || generateShortCode();
+        elements.freeModeBtn.addEventListener('click', () => {
+            isAdmin = false;
+            currentCode = 'guest-' + generateShortCode();
             setupPeer(currentCode);
-            elements.intro.style.display = 'none';
-            elements.chatPage.style.display = 'flex';
+            elements.optionsPage.style.display = 'none';
+            elements.chatPage.style.display = 'block';
+            setTimeout(() => addMessage('System: Try Admin Mode to save chats!', 'system-message'), 5000);
+        });
+
+        elements.adminModeBtn.addEventListener('click', () => {
+            isAdmin = true;
+            const savedCode = localStorage.getItem('lockedCode');
+            currentCode = savedCode || prompt('Enter your code (or blank to generate):') || generateShortCode();
+            if (!savedCode) {
+                if (confirm('Lock this code forever?')) localStorage.setItem('lockedCode', currentCode);
+            }
+            setupPeer(currentCode);
+            elements.optionsPage.style.display = 'none';
+            elements.chatPage.style.display = 'block';
         });
 
         elements.codeBtn.addEventListener('click', () => {
-            if (isAdmin && currentCode) return;
+            if (isAdmin && localStorage.getItem('lockedCode')) {
+                addMessage('System: Code locked. Start new in Admin Mode.', 'system-message');
+                return;
+            }
             currentCode = generateShortCode();
             setupPeer(currentCode);
-            elements.codeDisplay.textContent = `Your Code: ${currentCode}`;
+            elements.codeDisplay.innerHTML = `Your Code: ${currentCode} <span onclick="navigator.clipboard.writeText('${currentCode}')">[Copy]</span>`;
         });
 
         elements.joinBtn.addEventListener('click', () => {
             const code = elements.codeInput.value.trim();
             if (!code || code.length !== 5 || !/^\d+$/.test(code)) {
-                addMessage('System: Invalid code!', 'system-message');
+                addMessage('System: Invalid code.', 'system-message');
                 return;
             }
             if (!peer) setupPeer('joiner-' + Date.now());
@@ -465,21 +441,26 @@
         });
 
         elements.sendBtn.addEventListener('click', sendMessage);
-        elements.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+        elements.messageInput.addEventListener('keypress', (e) => e.key === 'Enter' && sendMessage());
+
+        elements.settingsToggle.addEventListener('click', () => {
+            elements.settingsPanel.style.display = elements.settingsPanel.style.display === 'block' ? 'none' : 'block';
         });
 
-        elements.toggleSidebar.addEventListener('click', () => {
-            elements.sidebar.classList.toggle('visible');
+        elements.nickname.addEventListener('input', (e) => {
+            profile.nickname = e.target.value;
+            if (isAdmin) localStorage.setItem('profile', JSON.stringify(profile));
         });
 
-        elements.nickname.addEventListener('change', (e) => {
-            if (isAdmin) localStorage.setItem('nickname', e.target.value);
+        elements.avatarPicker.addEventListener('change', (e) => {
+            profile.avatar = e.target.value;
+            if (isAdmin) localStorage.setItem('profile', JSON.stringify(profile));
         });
 
-        window.addEventListener('beforeunload', (e) => {
-            if (Object.keys(connections).length) e.returnValue = 'You’ll disconnect from friends.';
-        });
+        // Load Profile
+        elements.nickname.value = profile.nickname;
+        elements.avatarPicker.value = profile.avatar;
+
         window.addEventListener('unload', cleanup);
     </script>
 </body>
